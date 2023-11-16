@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relógio</title>
+</head>
+
+<body>
+    <h1 id="clock">00 : 00 : 00</h1>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+        crossorigin="anonymous"></script>
+
+    <script>
+        const clock = document.getElementById('clock')
+
+        let time = 0
+        setInterval(() => {
+            time++
+
+            const hours = Math.floor(time / 3600);
+            const minutes = Math.floor(time % 3600 / 60);
+            const seconds = Math.floor((time % 3600) % 60)
+
+            clock.innerHTML = `${hours} : ${minutes} : ${seconds}`
+        }, 1000);
+
+        const socket = io('http://localhost:3000/')
+        socket.on('requestSignal', () => {
+            socket.emit('responseSignal', time)
+        })
+
+        socket.on('updateTime', (newTime) => {
+            time = newTime
+        })
+    </script>
+</body>
+
+</html>
